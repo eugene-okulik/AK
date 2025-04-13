@@ -6,4 +6,3 @@ s = (1 / 2) * katet_1 * katet_2
 
 print(gip)
 print(s)
-
