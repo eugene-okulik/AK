@@ -1,9 +1,9 @@
 a = 5
 b = 6
-sum = a + b
+sum_num = a + b
 dif = a - b
 muilt = a * b
 
-print(sum)
+print(sum_num)
 print(dif)
 print(muilt)
