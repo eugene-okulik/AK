@@ -8,7 +8,7 @@ my_dict['list'].append(62)
 
 my_dict['list'].pop(1)
 
-my_dict['dict']['i am a tuple'] = 'gg'
+my_dict['dict'][('i am a tuple',)] = 'gg'
 
 del my_dict['dict']['num_1']
 
