@@ -4,16 +4,18 @@ import sys
 sys.set_int_max_str_digits(1000000)
 
 
-first_num = 0
-second_num = 1
-fibonachi_list = [first_num, second_num]
+def fib_funct(limit = 100001):
+    first_num = 0
+    second_num = 1
+    count = 0
 
 
-while len(fibonachi_list) <= 100000:
-    first_num = first_num + second_num
-    second_num = first_num + second_num
-    fibonachi_list.append(first_num)
-    fibonachi_list.append(second_num)
+    while count < limit:
+        yield count, first_num
+        first_num, second_num = second_num, first_num + second_num
+        count += 1
 
 
-print(fibonachi_list[4], fibonachi_list[199], fibonachi_list[999], fibonachi_list[99999])
+for count, value in fib_funct(100001):
+    if count in (5, 200, 1000, 100000):
+        print(f"Fibonacci number at position {count} is {value}")
