@@ -1,7 +1,7 @@
 import sys
 
 
-sys.set_int_max_str_digits(1000000)
+sys.set_int_max_str_digits(1000001)
 
 
 def fib_funct(limit = 100001):
