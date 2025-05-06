@@ -1,13 +1,15 @@
-def repeat_me(func, count):
-    def wrapper(*args, count):
-        func(*args, count)
+def finish_me(func):
+    def wraper(*args):
+        results = func(*args)
+        print('finished')
+        return results
 
-    return wrapper
+    return wraper
 
 
-@repeat_me
+@finish_me
 def example(text):
     print(text)
 
 
-example('print me', count=2)
+example('print me')
