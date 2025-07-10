@@ -1,0 +1,8 @@
+{
+  "name": "Лилия",
+  "color": "white",
+  "price": 12,
+  "stem_length_cm": 45,
+  "avg_life_time": 9,
+  "freshness_days": 2
+}

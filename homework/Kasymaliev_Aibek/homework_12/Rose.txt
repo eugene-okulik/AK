@@ -1,0 +1,8 @@
+{
+  "name": "Роза",
+  "color": "red",
+  "price": 10,
+  "stem_length_cm": 50,
+  "avg_life_time": 7,
+  "freshness_days": 2
+}
