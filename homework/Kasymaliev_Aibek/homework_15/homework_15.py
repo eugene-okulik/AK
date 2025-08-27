@@ -71,20 +71,15 @@ for subject in subject_values:
     })
     print(f"Subjects: id = {subject_id}, title = {subject}")
 
-##lessons_values = [
-# 'Defence', 'Attack',
-# 'Field Strategy in Battle Magic', 'Wands',
-# 'Techniques','Common Charms'
-##]
 
 def lesson_function(subject, lessons_values):
-    cursor.execute(f"select id from subjects where title = %s", (subject,))
+    cursor.execute("select id from subjects where title = %s", (subject,))
     subject_id = cursor.fetchone()['id']
     for lesson in lessons_values:
         add_lesson = 'INSERT into lessons (title, subject_id) VALUES (%s, %s)'
         cursor.execute(add_lesson, (lesson, subject_id))
         lesson_id = cursor.lastrowid
-        cursor.execute(f"SELECT * FROM `lessons` WHERE id = %s", (lesson_id,))
+        cursor.execute("SELECT * FROM `lessons` WHERE id = %s", (lesson_id,))
         new_lesson = cursor.fetchone()
         print(
             f" Lessons: id = {new_lesson['id']}, title = {new_lesson['title']},"
@@ -99,10 +94,10 @@ lesson_function('Potions', ('Techniques', 'Common Charms',))
 
 def marks_function(mark, lesson, student):
     cursor = db.cursor(dictionary=True, buffered=True)
-    cursor.execute(f"select id from lessons where title = %s", (lesson,))
+    cursor.execute("select id from lessons where title = %s", (lesson,))
     lesson_row = cursor.fetchone()
     lesson_id = lesson_row['id']
-    cursor.execute(f'select id from students where name = %s', (student,))
+    cursor.execute('select id from students where name = %s', (student,))
     student_row = cursor.fetchone()
     student_id = student_row['id']
     add_mark = "INSERT INTO marks (value, lesson_id, student_id) VALUES (%s, %s, %s)"
