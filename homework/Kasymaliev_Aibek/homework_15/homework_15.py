@@ -95,7 +95,7 @@ lesson_function('Charms', ('Field Strategy in Battle Magic', 'Wands',))
 lesson_function('Potions', ('Techniques', 'Common Charms',))
 
 
-def marks_function(mark, lesson, student):
+def marks_function(mark, lesson):
     for lesson_in_dictionary in inserted_lesson:
         if lesson_in_dictionary['title'] == lesson:
             lesson_id = lesson_in_dictionary['id']
@@ -108,12 +108,65 @@ def marks_function(mark, lesson, student):
     print(f"Mark = {new_mark['value']}, student = {student}, lesson = {lesson})")
 
 
-marks_function('5', 'Defence', 'Maks')
-marks_function('5', 'Attack', 'Maks')
-marks_function('5', 'Field Strategy in Battle Magic', 'Maks')
-marks_function('4', 'Wands', 'Maks')
-marks_function('3', 'Techniques', 'Maks')
-marks_function('3', 'Common Charms', 'Maks')
+marks_function('5', 'Defence')
+marks_function('5', 'Attack')
+marks_function('5', 'Field Strategy in Battle Magic')
+marks_function('4', 'Wands')
+marks_function('3', 'Techniques')
+marks_function('3', 'Common Charms')
+
+
+cursor.execute("""SELECT s.name as student_name, m.value as mark
+from students s join marks m on m.student_id = s.id where s.id= %s""", (student_id,))
+marks = cursor.fetchall()
+for student_marks in marks:
+    print(f"student name = {student_marks['student_name']} - mark = {student_marks['mark']}")
+
+cursor.execute("""SELECT s.name as student_name,
+                                  b.title as book_title
+                           FROM students s join books b on s.id = b.taken_by_student_id where s.id = %s""",
+               (student_id,))
+books = cursor.fetchall()
+for taken_books_by_student in books:
+    print(f"student name = {taken_books_by_student['student_name']} book = {taken_books_by_student['book_title']}")
+
+info_from_database_about_student = query = """
+SELECT s.id AS student_id,
+       s.name AS student_name,
+       g.title AS group_title,
+       b.title AS book_title,
+       m.value AS mark,
+       l.title AS lesson_title,
+       s2.title AS subject_title
+FROM students s
+JOIN `groups` g ON g.id = s.group_id
+JOIN books b ON b.taken_by_student_id = s.id
+JOIN marks m ON m.student_id = s.id
+JOIN lessons l ON m.lesson_id = l.id
+JOIN subjects s2 ON s2.id = l.subject_id
+WHERE g.id = %s AND s.id = %s
+"""
+cursor.execute(query, (group_id, student_id))
+all_info_about_student = cursor.fetchall()
+student_info = {
+    "student_name": None,
+    "student_group": None,
+    "books": set(),
+    "marks": [],
+    "lesson": [],
+    "subjects": []
+}
+for info_about_student in all_info_about_student:
+    student_info['student_name'] = info_about_student['student_name']
+    student_info['student_group'] = info_about_student['group_title']
+    student_info['books'].add(info_about_student['book_title'])
+    student_info['marks'].append(info_about_student['mark'])
+    student_info['lesson'].append(info_about_student['lesson_title'])
+    student_info['subjects'].append(info_about_student['subject_title'])
+
+for key, value in student_info.items():
+    print(f"{key}: {value}")
+
 
 db.commit()
 db.close()
