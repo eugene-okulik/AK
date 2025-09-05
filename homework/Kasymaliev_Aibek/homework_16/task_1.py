@@ -12,10 +12,11 @@ db = mysql.connect(
     port=os.getenv('DB_PORT'),
     database=os.getenv('DB_DATABASE')
 )
+base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+file_path = os.path.join(base_path, 'eugene_okulik', 'Lesson_16', 'hw_data', 'data.csv')
 
 
-with open('C:\\Users\\aibek\\Desktop\\test_pro\\test\\AK\\homework\\eugene_okulik\\Lesson_16\\hw_data\\data.csv',
-          newline='') as csv_file:
+with open(file_path, newline='') as csv_file:
     file_data = csv.DictReader(csv_file)
     data = []
     for row in file_data:
@@ -34,7 +35,9 @@ with open('C:\\Users\\aibek\\Desktop\\test_pro\\test\\AK\\homework\\eugene_okuli
         and m.value = %s
         """
         cursor.execute(info_from_database_about_student, (row['name'], row['second_name'], row['group_title'],
-                                                          row['book_title'], row['subject_title'], row['lesson_title'],
-                                                          row['mark_value']))
-        for row_data in cursor:
-            print(row_data)
+                                                          row['book_title'], row['subject_title'],
+                                                          row['lesson_title'], row['mark_value']))
+        match_info = cursor.fetchall()
+
+        if not match_info:
+            print('В БД не найдены:', row)
