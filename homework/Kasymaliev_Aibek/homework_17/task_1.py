@@ -2,8 +2,8 @@ import os
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("path",help= "path file")
-parser.add_argument("--text",help= "text if file")
+parser.add_argument("path", help="path file")
+parser.add_argument("--text", help="text if file")
 args = parser.parse_args()
 
 info = []
