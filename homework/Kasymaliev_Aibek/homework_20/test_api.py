@@ -1,4 +1,4 @@
-import  pytest
+import pytest
 import requests
 
 
@@ -27,9 +27,9 @@ def object_for_test():
     headers = {'Content-Type': 'application/json'}
     post_response = requests.post("http://objapi.course.qa-practice.com/object", json=body, headers=headers)
     print("Тело объекта: ", post_response.json())
-    object_id =  post_response.json()['id']
+    object_id = post_response.json()['id']
     yield object_id
-    requests.delete(f"http://objapi.course.qa-practice.com/object/{object_id}",headers=headers)
+    requests.delete(f"http://objapi.course.qa-practice.com/object/{object_id}", headers=headers)
 
 
 @pytest.mark.parametrize('body', [{"data": {"price": 150, "count": 1}, "id": 1, "name": "Test object"},
@@ -59,9 +59,6 @@ def test_put_object(object_for_test, before_and_after_function):  # Провер
     headers = {'Content-Type': 'application/json'}
     put_response = requests.put(f"http://objapi.course.qa-practice.com/object/{object_for_test}", json=body,
                                 headers=headers)
-    print("Тело объекта при полном изменении: ", put_response.json())
-    check_response = requests.get(f"http://objapi.course.qa-practice.com/object/{object_for_test}",
-                                  headers=headers)
     assert put_response.status_code == 200, "Ошибка при изменении объекта"
     assert put_response.json()['data']['price'] == 300, "Ошибка при изменении поля 'price'"
     assert put_response.json()['data']['count'] == 2, "Ошибка при изменении поля 'count'"
@@ -80,7 +77,7 @@ def test_patch_object(object_for_test, before_and_after_function):  # Прове
                                     headers=headers)
     assert patch_response.status_code == 200, "Ошибка при изменении объекта"
     assert patch_response.json()['data']['price'] == 250, " Ошибка при изменении поля 'price'"
-    #assert patch_response.json()['data']['count'] == 1, "Невалидное значение в поле 'count'"
+    # assert patch_response.json()['data']['count'] == 1, "Невалидное значение в поле 'count'"
     assert patch_response.json()['name'] == 'Test object version 2', "Ошибка при изменении поля 'name'"
 
 
