@@ -1,5 +1,6 @@
 import pytest
 import requests
+import allure
 
 
 @pytest.fixture(scope='session')
@@ -16,6 +17,8 @@ def before_and_after_function():
     print('after test')
 
 
+@allure.feature('Create_object')
+@allure.story('CRUD')
 @pytest.fixture()
 def object_for_test():
     body = {
@@ -35,19 +38,29 @@ def object_for_test():
 @pytest.mark.parametrize('body', [{"data": {"price": 150, "count": 1}, "id": 1, "name": "Test object"},
                                   {"data": {"price": 300, "count": 2}, "id": 1, "name": "Test object_2"},
                                   {"data": {"price": 450, "count": 3}, "id": 1, "name": "Test object_3"}])
+@allure.feature('Create_object')
+@allure.story('CRUD')
 @pytest.mark.critical
 def test_post_object(body, session_function, before_and_after_function):  # Проверка POST
     headers = {'Content-Type': 'application/json'}
-    post_response = requests.post("http://objapi.course.qa-practice.com/object", json=body, headers=headers)
-    assert post_response.status_code == 200, "Ошибка при создании объекта"
-    assert post_response.json()['data']['price'] == body["data"]["price"], "Ошибка при сохранении поля 'price'"
-    assert post_response.json()['data']['count'] == body["data"]["count"], "Ошибка при сохранении поля 'count'"
-    assert post_response.json()['name'] == body["name"], "Ошибка при сохранении поля 'name'"
+    with allure.step('Run request to create a post'):
+        post_response = requests.post("http://objapi.course.qa-practice.com/object", json=body, headers=headers)
+    with allure.step('Check status code'):
+        assert post_response.status_code == 200, "Ошибка при создании объекта"
+    with allure.step(f'Check status price is {body['data']['price']}'):
+        assert post_response.json()['data']['price'] == body["data"]["price"], "Ошибка при сохранении поля 'price'"
+    with allure.step(f'Check count is {body['data']['count']}'):
+        assert post_response.json()['data']['count'] == body["data"]["count"], "Ошибка при сохранении поля 'count'"
+    with allure.step(f'Check name is {body['name']}'):
+        assert post_response.json()['name'] == body["name"], "Ошибка при сохранении поля 'name'"
     delete_post = requests.delete(f"http://objapi.course.qa-practice.com/object/{post_response.json()['id']}",
                                   headers=headers)
-    assert delete_post.status_code == 200, "Ошибка при удалении объекта"
+    with allure.step('Check status code'):
+        assert delete_post.status_code == 200, "Ошибка при удалении объекта"
 
 
+@allure.feature('Update_object')
+@allure.story('CRUD')
 @pytest.mark.medium
 def test_put_object(object_for_test, before_and_after_function):  # Проверка PUT
     body = {
@@ -57,15 +70,23 @@ def test_put_object(object_for_test, before_and_after_function):  # Провер
         "name": "Test object version 1"
     }
     headers = {'Content-Type': 'application/json'}
-    put_response = requests.put(f"http://objapi.course.qa-practice.com/object/{object_for_test}", json=body,
+    with allure.step(f'Check id is {object_for_test}'):
+        put_response = requests.put(f"http://objapi.course.qa-practice.com/object/{object_for_test}", json=body,
                                 headers=headers)
-    assert put_response.status_code == 200, "Ошибка при изменении объекта"
-    assert put_response.json()['data']['price'] == 300, "Ошибка при изменении поля 'price'"
-    assert put_response.json()['data']['count'] == 2, "Ошибка при изменении поля 'count'"
-    assert put_response.json()['name'] == 'Test object version 1', "Ошибка при изменении поля 'name'"
-    assert put_response.json()['id'] == str(object_for_test), "Ошибка при изменении поля 'id'"
+    with allure.step('Check status code is 200'):
+        assert put_response.status_code == 200, "Ошибка при изменении объекта"
+    with allure.step(f'Check status price is {body['data']['price']}'):
+        assert put_response.json()['data']['price'] == 300, "Ошибка при изменении поля 'price'"
+    with allure.step(f'Check count is {body['data']['count']}'):
+        assert put_response.json()['data']['count'] == 2, "Ошибка при изменении поля 'count'"
+    with allure.step(f'Check name is {body['name']}'):
+        assert put_response.json()['name'] == 'Test object version 1', "Ошибка при изменении поля 'name'"
+    with allure.step(f'Check id is {body['id']}'):
+        assert put_response.json()['id'] == str(object_for_test), "Ошибка при изменении поля 'id'"
 
 
+@allure.feature('Update_object')
+@allure.story('CRUD')
 def test_patch_object(object_for_test, before_and_after_function):  # Проверка PATCH
     body = {
         "data": {"price": 250,
@@ -73,20 +94,29 @@ def test_patch_object(object_for_test, before_and_after_function):  # Прове
         "name": "Test object version 2"
     }
     headers = {'Content-Type': 'application/json'}
-    patch_response = requests.patch(f"http://objapi.course.qa-practice.com/object/{object_for_test}", json=body,
+    with allure.step(f'Check id is {object_for_test}'):
+        patch_response = requests.patch(f"http://objapi.course.qa-practice.com/object/{object_for_test}", json=body,
                                     headers=headers)
-    assert patch_response.status_code == 200, "Ошибка при изменении объекта"
-    assert patch_response.json()['data']['price'] == 250, " Ошибка при изменении поля 'price'"
-    # assert patch_response.json()['data']['count'] == 1, "Невалидное значение в поле 'count'"
-    assert patch_response.json()['name'] == 'Test object version 2', "Ошибка при изменении поля 'name'"
+    with allure.step('Check status code is 200'):
+        assert patch_response.status_code == 200, "Ошибка при изменении объекта"
+    with allure.step(f'Check name is {body['data']['price']}'):
+        assert patch_response.json()['data']['price'] == 250, " Ошибка при изменении поля 'price'"
+    with allure.step(f'Check name is {body['data']['count']}'):
+        assert patch_response.json()['data']['count'] == 1, "Невалидное значение в поле 'count'"
+    with allure.step(f'Check name is {body['name']}'):
+        assert patch_response.json()['name'] == 'Test object version 2', "Ошибка при изменении поля 'name'"
 
 
+@allure.feature('Delete_object')
+@allure.story('CRUD')
 def test_delete_object(object_for_test, before_and_after_function, session_function):
     headers = {'Content-Type': 'application/json'}
     delete_response = requests.delete(f"http://objapi.course.qa-practice.com/object/{object_for_test}",
                                       headers=headers)
-    assert delete_response.status_code == 200, "Ошибка при удалении объекта"
+    with allure.step('Check status code is 200'):
+        assert delete_response.status_code == 201, "Ошибка при удалении объекта" # ошибка сделана специально
     check_response = requests.get(f"http://objapi.course.qa-practice.com/object/{object_for_test}",
                                   headers=headers)
-    if check_response.status_code != 404:
-        raise Exception("Объект не удалён!")
+    with allure.step('Check get status code is 404'):
+        if check_response.status_code != 404:
+            raise Exception("Объект не удалён!")
