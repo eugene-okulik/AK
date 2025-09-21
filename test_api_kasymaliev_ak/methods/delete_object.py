@@ -9,9 +9,5 @@ class DeleteObject(MasterMetod):
     @allure.step('Delete object')
     def delete_object(self, object_id):
         self.response = requests.delete(url=f"{self.url}/{object_id}", headers=self.headers)
-        return self.response
-
-    @allure.step('Check delete object')
-    def found_object(self, object_id):
-        self.response = requests.get(url=f"{self.url}/{object_id}", headers=self.headers)
-        return self.response.status_code
+        check_object = requests.get(url=f"{self.url}/{object_id}")
+        return self.response, check_object

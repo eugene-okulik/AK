@@ -33,3 +33,7 @@ class MasterMetod:
     def check_object_id(self, object_id):
         assert str(self.json['id']) == str(object_id), (f"Ожидали object_id = {object_id},"
                                                         f" получили {self.json['id']}")
+
+    @allure.step('Check object not found')
+    def check_statuscode_is_404(self):
+        assert self.response.status_code == 404, "Объект не найден"

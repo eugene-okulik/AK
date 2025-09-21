@@ -13,4 +13,4 @@ class CreateObject(MasterMetod):
             self.json = self.response.json()
         except ValueError:
             self.json = None
-        return self.response
+        return self.response, self.json

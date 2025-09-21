@@ -36,8 +36,8 @@ def test_post_object_negative(create_new_object_fix, body):
 @allure.feature('Update_object')
 @allure.story('CRUD')
 @pytest.mark.pozitive
-def test_put_object(object_for_test, updated_object_fix):  # Проверка PUT
-    object_id = object_for_test
+def test_put_object(create_test_object, updated_object_fix):  # Проверка PUT
+    object_id = create_test_object["id"]
     body = {
         "data": {"price": 300,
                  "count": 2},
@@ -55,8 +55,8 @@ def test_put_object(object_for_test, updated_object_fix):  # Проверка PU
 @allure.feature('Patch_update_object')
 @allure.story('CRUD')
 @pytest.mark.pozitive
-def test_patch_object(object_for_test, patch_update_object_fix):  # Проверка PATCH
-    object_id = object_for_test
+def test_patch_object(create_test_object, patch_update_object_fix):  # Проверка PATCH
+    object_id = create_test_object["id"]
     body = {"data": {"price": 150, "count": 1}, "name": "Test object"}
     patch_update_object_fix.patch_object(body, object_id)
     patch_update_object_fix.check_statuscode_is_200()
@@ -69,8 +69,22 @@ def test_patch_object(object_for_test, patch_update_object_fix):  # Провер
 @allure.feature('Delete_object')
 @allure.story('CRUD')
 @pytest.mark.pozitive
-def test_delete_object(object_for_test, delete_object_fix):
-    object_id = object_for_test
+def test_delete_object(create_test_object, delete_object_fix, get_object_fix):
+    object_id = create_test_object["id"]
     delete_object_fix.delete_object(object_id)
     delete_object_fix.check_statuscode_is_200()
-    delete_object_fix.found_object(object_id)
+    get_object_fix.get_object(object_id)
+    get_object_fix.check_statuscode_is_404()
+
+
+@allure.feature('Get_object')
+@allure.story('CRUD')
+@pytest.mark.pozitive
+def test_get_object(create_test_object, get_object_fix):
+    object_id = create_test_object["id"]
+    post_body = create_test_object
+    get_object_fix.get_object(object_id)
+    get_object_fix.check_statuscode_is_200()
+    get_object_fix.check_name(post_body['name'])
+    get_object_fix.check_price(post_body['data']['price'])
+    get_object_fix.check_count(post_body['data']['count'])
